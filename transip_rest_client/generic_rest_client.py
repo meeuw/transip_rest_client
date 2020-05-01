@@ -53,17 +53,6 @@ DEFAULT_HEADERS = {
     "Content-Type": "application/json",
 }
 
-requestfunction = {
-    'DELETE': requests.delete,
-    'GET': requests.get,
-    'HEAD': requests.head,
-    'OPTIONS': requests.options,
-    'PATCH': requests.patch,
-    'POST': requests.post,
-    'PUT': requests.put,
-}
-
-
 class GenericRestClient:
     """Generic REST client"""
     def __init__(self,
@@ -115,36 +104,9 @@ class GenericRestClient:
             extra_headers = {}
         url = urljoin(self.base_url, endpoint)
         try:
-            if call_type == 'get':
-                response = requests.get(
-                    url,
-                    params=params,
-                    headers=self.headers,
-                    timeout=self.timeout,
-                )
-            elif call_type == 'post':
-                response = requests.post(
-                    url,
-                    json=params,
-                    headers=self.headers,
-                    timeout=self.timeout,
-                )
-            elif call_type == 'put':
-                response = requests.put(
-                    url,
-                    json=params,
-                    headers=self.headers,
-                    timeout=self.timeout,
-                )
-            elif call_type == 'patch':
-                response = requests.patch(
-                    url,
-                    json=params,
-                    headers=self.headers,
-                    timeout=self.timeout,
-                )
-            elif call_type == 'delete':
-                response = requests.delete(
+            if call_type in ('get', 'post', 'put', 'patch', 'delete'):
+                response = requests.request(
+                    call_type.upper(),
                     url,
                     json=params,
                     headers=self.headers,
