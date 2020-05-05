@@ -105,13 +105,19 @@ class GenericRestClient:
         url = urljoin(self.base_url, endpoint)
         try:
             if call_type in ('get', 'post', 'put', 'patch', 'delete'):
-                response = requests.request(
-                    call_type.upper(),
-                    url,
-                    json=params,
-                    headers=self.headers,
-                    timeout=self.timeout,
-                )
+                request = {
+                    'method': call_type.upper(),
+                    'url': url,
+                    'json': params,
+                    'headers': self.headers,
+                    'timeout': self.timeout,
+                }
+                if call_type == 'get':
+                    request["json"] = params
+                else:
+                    request["params"] = params
+
+                response = requests.request(**request)
             else:
                 logger.error(f'GenericRestClient._do_request called with unknown verb {call_type}')
                 raise UnknownVerbException(call_type)
