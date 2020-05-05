@@ -113,9 +113,9 @@ class GenericRestClient:
                     'timeout': self.timeout,
                 }
                 if call_type == 'get':
-                    request["json"] = params
-                else:
                     request["params"] = params
+                else:
+                    request["json"] = params
 
                 response = requests.request(**request)
             else:
